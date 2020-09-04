@@ -3,19 +3,14 @@ import numpy
 from numpy import matrix
 import math
 from obj import Obj, Texture
-from lib import *
+from utils import *
 
-# ===============================================================
-# Constants
-# ===============================================================
-
+#Colores básicos
 BLACK = color(0, 0, 0)
 WHITE = color(255, 255, 255)
 
 
-# ===============================================================
-# Renders a BMP file
-# ===============================================================
+#Renderer de BMP
 
 class Render(object):
   def __init__(self, width, height):
@@ -44,11 +39,11 @@ class Render(object):
     self.current_color = color
 
   def point(self, x, y, color = None):
-    # 0,0 was intentionally left in the bottom left corner to mimic opengl
+    
     try:
       self.pixels[y][x] = color or self.current_color
     except:
-      # To avoid index out of range exceptions
+        #index out of range
       pass
 
   def triangle(self):
@@ -61,6 +56,10 @@ class Render(object):
       tB = next(self.active_vertex_array)
       tC = next(self.active_vertex_array)
 
+    nA = next(self.active_vertex_array)
+    nB = next(self.active_vertex_array)
+    nC = next(self.active_vertex_array)
+
     bbox_min, bbox_max = bbox(A, B, C)
 
     normal = norm(cross(sub(B, A), sub(C, A)))
@@ -71,14 +70,21 @@ class Render(object):
     for x in range(bbox_min.x, bbox_max.x + 1):
       for y in range(bbox_min.y, bbox_max.y + 1):
         w, v, u = barycentric(A, B, C, V2(x, y))
-        if w < 0 or v < 0 or u < 0:  # 0 is actually a valid value! (it is on the edge)
+        if w < 0 or v < 0 or u < 0:  
           continue
 
         if self.active_texture:
           tx = tA.x * w + tB.x * v + tC.x * u
           ty = tA.y * w + tB.y * v + tC.y * u
 
-          color = self.active_texture.get_color(tx, ty, intensity)
+        color = self.active_shader(
+            self,
+            triangle=(A, B, C),
+            bar=(w, v, u),
+            texture_coords=(tx, ty),
+            varying_normals=(nA, nB, nC)
+        )
+        #  color = self.active_texture.get_color(tx, ty, intensity)
 
         z = A.z * w + B.z * v + C.z * u
 
@@ -88,6 +94,7 @@ class Render(object):
         if x < len(self.zbuffer) and y < len(self.zbuffer[x]) and z > self.zbuffer[x][y]:
           self.point(x, y, color)
           self.zbuffer[x][y] = z
+
 
   def transform(self, vertex):
     augmented_vertex = [
@@ -123,6 +130,10 @@ class Render(object):
           for facepart in face:
             tvertex = V3(*model.tvertices[facepart[1]])
             vertex_buffer_object.append(tvertex)
+
+          for facepart in face:
+            nvertex = V3(*model.normals[facepart[2]])
+            vertex_buffer_object.append(nvertex)
 
     self.active_vertex_array = iter(vertex_buffer_object)
 
@@ -221,6 +232,6 @@ class Render(object):
         while True:
           self.triangle()
       except StopIteration:
-        print('Done.')
+        print('Finished.')
 
 

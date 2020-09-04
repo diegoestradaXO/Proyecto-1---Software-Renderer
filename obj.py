@@ -4,11 +4,6 @@ def color(r, g, b):
   return bytes([b, g, r])
 
 
-# ===============================================================
-# Loads an OBJ file
-# ===============================================================
-
-
 def try_int_minus1(s, base=10, val=None):
   try:
     return int(s, base) - 1
@@ -23,6 +18,7 @@ class Obj(object):
         self.vertices = []
         self.tvertices = []
         self.faces = []
+        self.normals = []
         self.read()
 
     def read(self):
@@ -38,6 +34,8 @@ class Obj(object):
                     self.vertices.append(list(map(float, value.split(' '))))
                 elif prefix == 'vt':
                     self.tvertices.append(list(map(float, value.split(' '))))
+                elif prefix == 'vn':
+                    self.normals.append(list(map(float, value.split(' '))))
                 elif prefix == 'f':
                     self.faces.append([list(map(try_int_minus1, face.split('/'))) for face in value.split(' ')])
         for tv in self.tvertices:
@@ -52,12 +50,12 @@ class Texture(object):
 
     def read(self):
         image = open(self.path, "rb")
-        image.seek(2 + 4 + 4)  # skip BM, skip bmp size, skip zeros
-        header_size = struct.unpack("=l", image.read(4))[0]  # read header size
+        image.seek(2 + 4 + 4) 
+        header_size = struct.unpack("=l", image.read(4))[0]  #header size
         image.seek(2 + 4 + 4 + 4 + 4)
         
-        self.width = struct.unpack("=l", image.read(4))[0]  # read width
-        self.height = struct.unpack("=l", image.read(4))[0]  # read width
+        self.width = struct.unpack("=l", image.read(4))[0]  #  width
+        self.height = struct.unpack("=l", image.read(4))[0]  #  height
         self.pixels = []
         image.seek(header_size)
         for y in range(self.height):
@@ -72,8 +70,7 @@ class Texture(object):
     def get_color(self, tx, ty, intensity=1):
         x = int(tx * self.width)
         y = int(ty * self.height)
-        # return self.pixels[y][x]
         try:
             return bytes(map(lambda b: round(b*intensity) if b*intensity > 0 else 0, self.pixels[y][x]))
         except:
-            pass  # what causes this
+            pass

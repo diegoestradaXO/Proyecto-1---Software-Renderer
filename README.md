@@ -2,7 +2,7 @@
 
 La escena realizada fue la siguiente:
 
-![](./out.bmp =400x400)
+![](out.bmp =400x400)
 
 ## Instrucciones
 

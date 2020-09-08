@@ -2,7 +2,7 @@
 
 La escena realizada fue la siguiente:
 
-![Marvel meets Transformers and Sonic in Sidney](out.bmp)
+![](out.bmp =800x)
 
 ## Instrucciones
 

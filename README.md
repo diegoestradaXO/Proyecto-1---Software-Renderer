@@ -2,7 +2,9 @@
 
 La escena realizada fue la siguiente:
 
-![](out.bmp =800x)
+<div>
+<img src="attachment:out.bmp" width="500" height="500"/>
+</div>
 
 ## Instrucciones
 

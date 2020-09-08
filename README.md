@@ -2,9 +2,7 @@
 
 La escena realizada fue la siguiente:
 
-<div>
-<img src="attachment:out.bmp" width="500" height="500"/>
-</div>
+![](./out.bmp =400x400)
 
 ## Instrucciones
 

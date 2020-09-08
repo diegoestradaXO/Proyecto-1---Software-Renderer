@@ -1,5 +1,12 @@
 from gl import *
 from shaders import *
+import time
+
+#Este script inicializa el Render, setea los tamaños
+#tambien los modelos que seran cargados y las respectivas texutras
+#se especifican los shaders 
+
+start_time = time.time()
 
 #Cargo el fondo de la escena
 r = Render(800, 800)
@@ -43,4 +50,7 @@ r.active_texture = t
 r.load('./models/sphere.obj', translate=(0, 0.8, 0), scale=(0.2, 0.2, 0.2), rotate=(0, 0, 0))
 r.draw_arrays('TRIANGLES')
 
-r.write('out.bmp')
+#se escribe el archivo final
+r.glFinish('out.bmp')
+
+print("Time: %s seconds" % (time.time() - start_time))

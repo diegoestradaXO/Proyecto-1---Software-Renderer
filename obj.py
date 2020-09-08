@@ -1,5 +1,10 @@
 import struct
 
+#Este script sirve para poder cargar modelos en archivos .obj
+#guarda informacion de las caras, vertices, tvertices, normales
+#De igual manera, lee un archivo .bmp que es la textura a aplicar al modelo cargado
+#anteriormente
+
 def color(r, g, b):
   return bytes([b, g, r])
 
@@ -22,6 +27,7 @@ class Obj(object):
         self.read()
 
     def read(self):
+        #Lectura del archivo linea por linea
         for line in self.lines:
             if line:
                 try:

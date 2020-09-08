@@ -1,5 +1,5 @@
 import random
-import numpy
+import numpy #solo uso numpy para las matrices, para lo demás uso solo math.py
 from numpy import matrix
 import math
 from obj import Obj, Texture
@@ -11,7 +11,6 @@ WHITE = color(255, 255, 255)
 
 
 #Renderer de BMP
-
 class Render(object):
   def __init__(self, width, height):
     self.width = width
@@ -21,6 +20,7 @@ class Render(object):
     self.light = V3(0,0,1)
     self.active_texture = None
     self.active_vertex_array = []
+
 
   def clear(self):
     self.pixels = [
@@ -32,20 +32,22 @@ class Render(object):
       for y in range(self.height)
     ]
 
-  def write(self, filename):
-    writebmp(filename, self.width, self.height, self.pixels)
+  #escribe el archivo bmp
+  def glFinish(self, filename):
+    write(filename, self.width, self.height, self.pixels)
 
   def set_color(self, color):
     self.current_color = color
 
+  #funcion basica para pintar un pixel
   def point(self, x, y, color = None):
-    
     try:
       self.pixels[y][x] = color or self.current_color
     except:
-        #index out of range
+        #index out of range error, significa que no se puede dibujar fuera del size dado
       pass
 
+  #poligono de triangulo, usado en su mayoria
   def triangle(self):
     A = next(self.active_vertex_array)
     B = next(self.active_vertex_array)
@@ -84,8 +86,6 @@ class Render(object):
             texture_coords=(tx, ty),
             varying_normals=(nA, nB, nC)
         )
-        #  color = self.active_texture.get_color(tx, ty, intensity)
-
         z = A.z * w + B.z * v + C.z * u
 
         if x < 0 or y < 0:
@@ -112,9 +112,9 @@ class Render(object):
       (tranformed_vertex[1]/tranformed_vertex[3]),
       (tranformed_vertex[2]/tranformed_vertex[3])
     ]
-    print(V3(*tranformed_vertex))
     return V3(*tranformed_vertex)
 
+  #carga el modelo del archivo obj dado
   def load(self, filename, translate=(0, 0, 0), scale=(1, 1, 1), rotate=(0, 0, 0)):
     self.loadModelMatrix(translate, scale, rotate)
 
@@ -218,6 +218,7 @@ class Render(object):
       [0, 0, 0, 1]
     ])
 
+  #setea la camara y hacia donde se ve en la escena
   def lookAt(self, eye, center, up):
     z = norm(sub(eye, center))
     x = norm(cross(up, z))
@@ -232,6 +233,6 @@ class Render(object):
         while True:
           self.triangle()
       except StopIteration:
-        print('Finished.')
+        print('Model finished...')
 
 

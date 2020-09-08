@@ -1,4 +1,5 @@
 from gl import *
+#Este script contiene los shaders que se usan en la escena
 
 #sphere is gonna use it
 def moon(render, **kwargs):
@@ -13,7 +14,7 @@ def moon(render, **kwargs):
   # light intensity
   iA, iB, iC = [ dot(n, render.light) for n in (nA, nB, nC) ]
   intensity = w*iA + v*iB + u*iC
-  intensity = intensity**2
+  intensity = intensity**2 #exponencial
   if(tcolor):
     return color(
         int(tcolor[2] * intensity) if tcolor[0] * intensity > 0 else 0,
